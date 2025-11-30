@@ -1,24 +1,35 @@
 import google.generativeai as genai
-import time
+from rag_engine import setup_rag_pipeline, query_rag
+
+# Cache RAG pipeline
+rag_chain = None
 
 def send_query_get_response(api_key, user_question, file_paths):
-    """Send query to Gemini with file context"""
-    genai.configure(api_key=api_key)
+    """Send query using RAG pipeline"""
+    global rag_chain
     
-    model = genai.GenerativeModel('gemini-2.0-flash')
+    if not file_paths:
+        # Fallback to direct Gemini if no files
+        return direct_gemini_response(api_key, user_question)
     
-    # Add file reference instruction
-    user_question = user_question + ' and tell me which file are the top results based on your similarity search.'
+    # Initialize RAG pipeline if not already done
+    if rag_chain is None:
+        print("Initializing RAG pipeline...")
+        rag_chain = setup_rag_pipeline(file_paths, api_key)
     
-    # Create message with files
-    message = model.generate_content(
-        [user_question],
-        stream=False
-    )
+    if rag_chain is None:
+        return "Error: Could not load documents for RAG."
     
-    response = message.text
-    print(f"✓ Response generated: {response[:100]}...")
+    # Query RAG
+    response = query_rag(rag_chain, user_question)
+    print(f"✓ RAG Response generated")
     
     return response if response else "Server issue, try again"
 
-
+def direct_gemini_response(api_key, user_question):
+    """Fallback: Direct response without RAG"""
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-2.0-flash')
+    
+    message = model.generate_content([user_question], stream=False)
+    return message.text

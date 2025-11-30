@@ -3,6 +3,7 @@ from PIL import Image
 from api_handler import send_query_get_response
 from chat_gen import generate_html
 from file_upload import check_and_upload_files
+import os
 
 logo = Image.open('logo.png')
 sb_logo = Image.open('sb_logo.png')
@@ -19,7 +20,7 @@ with c2:
 
 st.markdown("## AI Tutor Description")
 rag_description = """
-EduMentor leverages the cutting-edge RAG (Retrieval-Augmented Generation) function with Google Gemini to provide in-depth, contextually rich answers to complex educational queries.
+EduMentor leverages RAG (Retrieval-Augmented Generation) with Google Gemini to provide in-depth, contextually rich answers to complex educational queries. It retrieves relevant information from your uploaded documents and generates accurate responses.
 """
 st.markdown(rag_description)
 
@@ -38,11 +39,14 @@ if api_key:
     st.sidebar.caption('Made by D')
 
     if st.sidebar.button('Generate Chat History'):
-        html_data = generate_html(st.session_state.messages)
-        st.sidebar.download_button(label="Download Chat History as HTML",
-                                    data=html_data,
-                                    file_name="chat_history.html",
-                                    mime="text/html")
+        if "messages" in st.session_state:
+            html_data = generate_html(st.session_state.messages)
+            st.sidebar.download_button(
+                label="Download Chat History as HTML",
+                data=html_data,
+                file_name="chat_history.html",
+                mime="text/html"
+            )
 
     # Main Chat Interface
     st.subheader('Q&A record with AI-Tutor 📜')
@@ -61,7 +65,8 @@ if api_key:
             st.markdown(prompt)
 
         with st.chat_message("assistant"):
-            response = send_query_get_response(api_key, prompt, file_paths)
+            with st.spinner("🤔 Thinking..."):
+                response = send_query_get_response(api_key, prompt, file_paths)
             st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
 

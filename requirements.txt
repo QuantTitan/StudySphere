@@ -5,3 +5,7 @@ markdown2
 pdfkit
 wkhtmltopdf
 google-generativeai
+langchain
+langchain-google-genai
+langchain-community
+pypdf
