@@ -12,13 +12,23 @@ def setup_rag_pipeline(pdf_paths, api_key):
     
     # Load all PDFs
     for pdf_path in pdf_paths:
-        if os.path.exists(pdf_path):
-            loader = PyPDFLoader(pdf_path)
-            documents = loader.load()
-            all_documents.extend(documents)
+        try:
+            if os.path.exists(pdf_path):
+                print(f"Loading: {pdf_path}")
+                loader = PyPDFLoader(pdf_path)
+                documents = loader.load()
+                all_documents.extend(documents)
+                print(f"✓ Loaded {len(documents)} pages from {pdf_path}")
+            else:
+                print(f"✗ File not found: {pdf_path}")
+        except Exception as e:
+            print(f"Error loading {pdf_path}: {e}")
     
     if not all_documents:
+        print("✗ No documents loaded")
         return None
+    
+    print(f"Total documents loaded: {len(all_documents)}")
     
     # Split documents into chunks
     splitter = RecursiveCharacterTextSplitter(
@@ -26,6 +36,7 @@ def setup_rag_pipeline(pdf_paths, api_key):
         chunk_overlap=200
     )
     chunks = splitter.split_documents(all_documents)
+    print(f"Created {len(chunks)} chunks")
     
     # Create embeddings
     embeddings = GoogleGenerativeAIEmbeddings(
@@ -35,6 +46,7 @@ def setup_rag_pipeline(pdf_paths, api_key):
     
     # Create vector store
     vectorstore = FAISS.from_documents(chunks, embeddings)
+    print("✓ Vector store created")
     
     # Initialize LLM
     llm = ChatGoogleGenerativeAI(
@@ -47,7 +59,7 @@ def setup_rag_pipeline(pdf_paths, api_key):
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
-        retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),
+        retriever=vectorstore.as_retriever(search_kwargs={"k": 5}),
         return_source_documents=True
     )
     
@@ -61,8 +73,10 @@ def query_rag(qa_chain, question):
     sources = result.get("source_documents", [])
     
     # Format source references
-    source_info = "\n\n**Sources:**\n"
+    source_info = "\n\n**📚 Sources Used:**\n"
     for i, doc in enumerate(sources, 1):
-        source_info += f"{i}. {doc.metadata.get('source', 'Unknown')} (Page {doc.metadata.get('page', 'N/A')})\n"
+        filename = os.path.basename(doc.metadata.get('source', 'Unknown'))
+        page = doc.metadata.get('page', 'N/A')
+        source_info += f"{i}. **{filename}** (Page {page})\n"
     
     return response + source_info
