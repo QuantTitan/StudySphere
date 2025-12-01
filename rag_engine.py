@@ -7,7 +7,7 @@ import os
 import time
 from observability import tracker
 
-RELEVANCE_THRESHOLD = 0.7  # Filter results below this similarity score
+RELEVANCE_THRESHOLD = 0.3  # Filter results below this similarity score
 
 def setup_rag_pipeline(pdf_paths, api_key):
     """Initialize RAG with vector search from PDFs"""
@@ -56,7 +56,7 @@ def setup_rag_pipeline(pdf_paths, api_key):
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
         google_api_key=api_key,
-        temperature=0.7
+        temperature=1.0
     )
     
     # Create RAG chain with semantic filtering

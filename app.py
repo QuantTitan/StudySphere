@@ -33,7 +33,7 @@ StudySphere leverages RAG (Retrieval-Augmented Generation) with Google Gemini to
 
 **✨ Advanced Features:**
 - 🔄 **Context Compaction** - Reduces token load while preserving key information
-- 🎯 **Semantic Filtering** - Ensures high-relevance results only (>0.7 similarity)
+- 🎯 **Semantic Filtering** - Ensures high-relevance results only (>0.3 similarity)
 - 🧠 **Role-Enriched Prompts** - Expert educational guidance with source citations
 """
 st.markdown(rag_description)
