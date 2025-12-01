@@ -4,6 +4,8 @@ from api_handler import send_query_get_response
 from chat_gen import generate_html
 from file_upload import check_and_upload_files
 import os
+from agent_executor import agent
+from rag_engine import setup_rag_pipeline
 
 logo = Image.open('logo.png')
 sb_logo = Image.open('sb_logo.png')
@@ -16,11 +18,11 @@ with c1:
     st.image(logo, width=120)
 
 with c2:
-    st.title('EduMentor : An AI-Enhanced Tutoring System')
+    st.title('StudySphere : An AI-Enhanced Tutoring System')
 
 st.markdown("## AI Tutor Description")
 rag_description = """
-EduMentor leverages RAG (Retrieval-Augmented Generation) with Google Gemini to provide in-depth, contextually rich answers to complex educational queries. It retrieves relevant information from your uploaded documents and generates accurate responses.
+StudySphere leverages RAG (Retrieval-Augmented Generation) with Google Gemini to provide in-depth, contextually rich answers to complex educational queries. It retrieves relevant information from your uploaded documents and generates accurate responses.
 """
 st.markdown(rag_description)
 
@@ -29,14 +31,18 @@ api_key = st.text_input(label='Enter your Gemini API Key', type='password')
 
 if api_key:
     file_ids, file_paths = check_and_upload_files(api_key)
+
+    if file_paths:
+        if "qa_chain" not in st.session_state:
+            st.session_state.qa_chain = setup_rag_pipeline(file_paths, api_key)
     
     st.markdown(f'Number of files uploaded: :blue[{len(file_ids)}]')
     st.divider()
 
     # Sidebar
-    st.sidebar.header('EduMentor: AI-Tutor')
+    st.sidebar.header('StudySphere: AI-Tutor')
     st.sidebar.image(logo, width=120)
-    st.sidebar.caption('Made by D')
+    st.sidebar.caption('Made by QuantTitan and D')
 
     if st.sidebar.button('Generate Chat History'):
         if "messages" in st.session_state:
@@ -66,9 +72,9 @@ if api_key:
 
         with st.chat_message("assistant"):
             with st.spinner("🤔 Thinking..."):
-                response = send_query_get_response(api_key, prompt, file_paths)
+                response = agent.run(prompt)
             st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
 
 else:
-    st.warning("Please enter your Gemini API Key to use EduMentor.")
+    st.warning("Please enter your Gemini API Key to use StudySphere.")
