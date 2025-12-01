@@ -1,11 +1,17 @@
 from langchain.agents import initialize_agent, AgentType, Tool
-from langchain.agents.agent import AgentExecutor
-from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
 from llm_client import get_llm
 import streamlit as st
 from rag_engine import query_rag
 
-# Role-Enriched System Prompt for stronger agent control
+# add imports for existing tool functions
+from agent_tools import (
+    rag_search_tool,
+    generate_notes_tool,
+    generate_quiz_tool,
+    summary_tool
+)
+
+# Role-Enriched System Prompt 
 SYSTEM_PROMPT = """You are StudySphere AI-Tutor, an expert educational assistant specialized in providing accurate, contextually-rich educational guidance.
 
 **Your Core Responsibilities:**
@@ -30,48 +36,53 @@ SYSTEM_PROMPT = """You are StudySphere AI-Tutor, an expert educational assistant
 
 You are committed to fostering deep understanding and academic integrity."""
 
-def create_agent(api_key: str):
-    """Create and return a LangChain agent bound to a Gemini LLM using api_key."""
-    llm = get_llm(api_key)
-
-    # tool implementations close over llm and use session_state.qa_chain
-    def rag_search_tool_func(query: str) -> str:
-        if "qa_chain" not in st.session_state or st.session_state.qa_chain is None:
-            return "❌ RAG not initialized. Upload documents first."
-        return query_rag(st.session_state.qa_chain, query)
-
-    def generate_notes_tool_func(topic: str) -> str:
-        context = rag_search_tool_func(topic)
-        prompt = f"Based on the course materials, create structured study notes on: {topic}\n\nContext:\n{context}\n\nProvide clear headings, bullet points, and key takeaways."
-        return llm.predict(prompt)
-
-    def generate_quiz_tool_func(topic: str) -> str:
-        context = rag_search_tool_func(topic)
-        prompt = f"Generate 5 multiple-choice questions with correct answers based on this course material:\n{context}\n\nFormat: Question | A) | B) | C) | D) | Answer: X"
-        return llm.predict(prompt)
-
-    def summary_tool_func(text: str) -> str:
-        prompt = f"Summarize this educational content concisely, keeping key concepts:\n{text}"
-        return llm.predict(prompt)
-
-    tools = [
-        Tool(name="RAG_Search", func=rag_search_tool_func,
-             description="Retrieve relevant content from uploaded course PDFs. Returns exact excerpts with source citations."),
-        Tool(name="Generate_Notes", func=generate_notes_tool_func,
-             description="Generate structured, hierarchical study notes for a given topic from course materials."),
-        Tool(name="Generate_Quiz", func=generate_quiz_tool_func,
-             description="Generate 5 multiple-choice practice questions with answers based on course content."),
-        Tool(name="Summarize", func=summary_tool_func,
-             description="Summarize complex educational content into digestible key points.")
-    ]
-
+def _make_agent(llm, tools, system_message=None):
+    """Helper to create an agent from an llm and list of tools."""
     agent = initialize_agent(
         tools,
         llm,
         agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True,
-        agent_kwargs={
-            "system_message": SYSTEM_PROMPT
-        }
+        verbose=False,
+        agent_kwargs={"system_message": system_message or SYSTEM_PROMPT}
     )
     return agent
+
+def create_rag_agent(api_key: str):
+    """Agent focused on retrieval-only (returns excerpts and sources)."""
+    llm = get_llm(api_key)
+    tools = [
+        Tool(name="RAG_Search", func=rag_search_tool,
+             description="Retrieve content from uploaded PDFs with citations.")
+    ]
+    return _make_agent(llm, tools, system_message="RAG Retrieval Agent — return exact excerpts and source citations.")
+
+def create_tutor_agent(api_key: str):
+    """Tutor agent for Q&A using RAG and summary tool."""
+    llm = get_llm(api_key)
+    tools = [
+        Tool(name="RAG_Search", func=rag_search_tool,
+             description="Retrieve content from uploaded PDFs with citations."),
+        Tool(name="Summarize", func=summary_tool,
+             description="Summarize or simplify retrieved content.")
+    ]
+    return _make_agent(llm, tools)
+
+def create_notes_agent(api_key: str):
+    """Notes generator agent — builds structured study notes from retrieved context."""
+    llm = get_llm(api_key)
+    tools = [
+        Tool(name="Generate_Notes", func=generate_notes_tool,
+             description="Create structured notes from course materials."),
+        Tool(name="RAG_Search", func=rag_search_tool,
+             description="Optional retrieval helper for notes generation.")
+    ]
+    return _make_agent(llm, tools)
+
+def create_summarizer_agent(api_key: str):
+    """Standalone summarizer agent."""
+    llm = get_llm(api_key)
+    tools = [
+        Tool(name="Summarize", func=summary_tool,
+             description="Condense complex topics into concise summaries.")
+    ]
+    return _make_agent(llm, tools)

@@ -4,7 +4,12 @@ from api_handler import send_query_get_response
 from chat_gen import generate_html
 from file_upload import check_and_upload_files
 import os
-from agent_executor import create_agent
+from agent_executor import (
+    create_rag_agent,
+    create_tutor_agent,
+    create_notes_agent,
+    create_summarizer_agent,
+)
 from rag_engine import setup_rag_pipeline
 
 logo = Image.open('logo.png')
@@ -35,9 +40,12 @@ st.markdown(rag_description)
 api_key = st.text_input(label='Enter your Gemini API Key', type='password')
 
 if api_key:
-    # create agent for this api_key if not present or if key changed
+    # create agents for this api_key if not present or if key changed
     if "agent_api_key" not in st.session_state or st.session_state.agent_api_key != api_key:
-        st.session_state.agent = create_agent(api_key)
+        st.session_state.rag_agent = create_rag_agent(api_key)
+        st.session_state.tutor_agent = create_tutor_agent(api_key)
+        st.session_state.notes_agent = create_notes_agent(api_key)
+        st.session_state.summarizer_agent = create_summarizer_agent(api_key)
         st.session_state.agent_api_key = api_key
 
     file_ids, file_paths = check_and_upload_files(api_key)
@@ -50,25 +58,9 @@ if api_key:
     st.markdown(f'Number of files uploaded: :blue[{len(file_ids)}]')
     st.divider()
 
-    # Sidebar
-    st.sidebar.header('StudySphere: AI-Tutor')
-    st.sidebar.image(logo, width=120)
-    st.sidebar.caption('Made by QuantTitan and D')
+    # Sidebar: pick agent role
+    agent_choice = st.sidebar.radio("Choose agent role", ["Tutor (Q&A)", "RAG Retrieval", "Notes Generator", "Summarizer"])
     
-    # Show active enhancements
-    st.sidebar.markdown("### 🚀 Active Enhancements")
-    st.sidebar.markdown("✓ Context Compaction\n✓ Semantic Filtering\n✓ Role-Enriched Prompts")
-
-    if st.sidebar.button('Generate Chat History'):
-        if "messages" in st.session_state:
-            html_data = generate_html(st.session_state.messages)
-            st.sidebar.download_button(
-                label="Download Chat History as HTML",
-                data=html_data,
-                file_name="chat_history.html",
-                mime="text/html"
-            )
-
     # Main Chat Interface
     st.subheader('Q&A record with AI-Tutor 📜')
     
@@ -87,8 +79,18 @@ if api_key:
 
         with st.chat_message("assistant"):
             with st.spinner("🤔 Thinking..."):
-                # use session agent created with user's api_key
-                response = st.session_state.agent.run(prompt)
+                # route to selected agent and enforce RAG precondition
+                if agent_choice in ("RAG Retrieval", "Notes Generator", "Tutor (Q&A)") and ("qa_chain" not in st.session_state or st.session_state.qa_chain is None):
+                    response = "⚠️ Please upload documents first to enable RAG-powered agents."
+                else:
+                    if agent_choice == "RAG Retrieval":
+                        response = st.session_state.rag_agent.run(prompt)
+                    elif agent_choice == "Notes Generator":
+                        response = st.session_state.notes_agent.run(prompt)
+                    elif agent_choice == "Summarizer":
+                        response = st.session_state.summarizer_agent.run(prompt)
+                    else:
+                        response = st.session_state.tutor_agent.run(prompt)
             st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
 
