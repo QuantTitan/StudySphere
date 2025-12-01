@@ -2,6 +2,8 @@ from langchain.agents import initialize_agent, AgentType, Tool
 from llm_client import get_llm
 import streamlit as st
 from rag_engine import query_rag
+import time
+from observability import tracker
 
 # add imports for existing tool functions
 from agent_tools import (
@@ -15,7 +17,7 @@ from agent_tools import (
 SYSTEM_PROMPT = """You are StudySphere AI-Tutor, an expert educational assistant specialized in providing accurate, contextually-rich educational guidance.
 
 **Your Core Responsibilities:**
-1. Answer questions exclusively based on uploaded course materials
+1. Answer questions based on (but not limited to) uploaded course materials
 2. Cite specific sources (file names and page numbers) for all claims
 3. Provide structured, clear explanations with examples when relevant
 4. Identify knowledge gaps and suggest further reading from materials
@@ -28,11 +30,11 @@ SYSTEM_PROMPT = """You are StudySphere AI-Tutor, an expert educational assistant
 - Summarize: Condense complex topics
 
 **Response Guidelines:**
-- Always prioritize accuracy over completeness
-- Use simple language unless technical terms are necessary
-- Include relevant examples from course materials
-- Flag when information is NOT covered in materials
+- Include relevant examples from course materials 
+- Flag when information is NOT covered in materials (but do not limit responses to only those)
 - Encourage critical thinking with follow-up questions
+- Make sure to highlight cited sources clearly
+- Include equations or formulas when applicable
 
 You are committed to fostering deep understanding and academic integrity."""
 
@@ -86,3 +88,12 @@ def create_summarizer_agent(api_key: str):
              description="Condense complex topics into concise summaries.")
     ]
     return _make_agent(llm, tools)
+
+def wrapped_agent_run(agent, prompt, agent_name):
+    """Run agent and track latency"""
+    start_time = time.time()
+    response = agent.run(prompt)
+    latency = time.time() - start_time
+    tracker.log_prompt_latency(agent_name, latency)
+    tracker.log_query(prompt, agent_name, response, latency)
+    return response

@@ -4,6 +4,8 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGener
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 import os
+import time
+from observability import tracker
 
 RELEVANCE_THRESHOLD = 0.7  # Filter results below this similarity score
 
@@ -85,15 +87,26 @@ def compact_context(documents: list, max_length: int = 2000) -> str:
 
 def query_rag(qa_chain, question):
     """Query the RAG pipeline with semantic filtering and context compaction"""
+    retrieval_start = time.time()
+    
     result = qa_chain({"query": question})
+    
+    retrieval_time = time.time() - retrieval_start
     
     response = result["result"]
     sources = result.get("source_documents", [])
     
+    # Log retrieval metrics
+    tracker.log_retrieval(question, retrieval_time, len(sources))
+    
+    # Estimate token count (rough: 1 token ≈ 4 chars)
+    total_chars = len(question) + len(response)
+    token_estimate = total_chars // 4
+    tracker.log_token_count(question, response, token_estimate)
+    
     # Apply context compaction to reduce token usage
     if sources:
         compacted_context = compact_context(sources, max_length=2000)
-        # Note: The response already uses compacted context through the chain
     
     # Format source references with relevance info
     source_info = "\n\n**📚 Sources Used:**\n"

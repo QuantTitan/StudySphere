@@ -1,0 +1,84 @@
+2025-12-01 18:46:31,627 - pypdf._reader - WARNING - Ignoring wrong pointing object 12 0 (offset 0)
+2025-12-01 18:46:31,629 - pypdf._reader - WARNING - Ignoring wrong pointing object 39 0 (offset 0)
+2025-12-01 18:46:31,719 - pypdf._reader - WARNING - Ignoring wrong pointing object 13 0 (offset 0)
+2025-12-01 18:46:31,720 - pypdf._reader - WARNING - Ignoring wrong pointing object 19 0 (offset 0)
+2025-12-01 18:46:31,721 - pypdf._reader - WARNING - Ignoring wrong pointing object 150 0 (offset 0)
+2025-12-01 18:46:31,721 - pypdf._reader - WARNING - Ignoring wrong pointing object 151 0 (offset 0)
+2025-12-01 18:46:33,125 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-12-01 18:46:33,188 - faiss.loader - INFO - Successfully loaded faiss with AVX512 support.
+2025-12-01 18:47:03,335 - observability - INFO - RAG Retrieval | Query: 5 main equations Kalman Filter... | Time: 4.16s | Results: 5
+2025-12-01 18:47:03,335 - observability - INFO - Token Usage | Prompt: 30 chars | Completion: 219 chars | Est. Tokens: 62
+2025-12-01 18:47:08,570 - observability - INFO - RAG Retrieval | Query: Kalman Filter equations... | Time: 2.69s | Results: 5
+2025-12-01 18:47:08,570 - observability - INFO - Token Usage | Prompt: 23 chars | Completion: 203 chars | Est. Tokens: 56
+2025-12-01 18:47:13,820 - observability - INFO - RAG Retrieval | Query: Kalman Filter prediction update equations... | Time: 2.79s | Results: 5
+2025-12-01 18:47:13,820 - observability - INFO - Token Usage | Prompt: 41 chars | Completion: 102 chars | Est. Tokens: 35
+2025-12-01 18:47:18,323 - observability - INFO - Query Complete | Agent: Tutor (Q&A) | Time: 20.59s
+2025-12-01 18:47:28,877 - observability - INFO - Metrics exported to metrics.json
+2025-12-01 18:48:07,801 - observability - INFO - RAG Retrieval | Query: Kalman Filter formulas... | Time: 1.52s | Results: 5
+2025-12-01 18:48:07,801 - observability - INFO - Token Usage | Prompt: 22 chars | Completion: 259 chars | Est. Tokens: 70
+2025-12-01 18:48:13,929 - observability - INFO - RAG Retrieval | Query: Kalman Filter equations... | Time: 5.17s | Results: 5
+2025-12-01 18:48:13,930 - observability - INFO - Token Usage | Prompt: 23 chars | Completion: 217 chars | Est. Tokens: 60
+2025-12-01 18:48:21,844 - observability - INFO - RAG Retrieval | Query: Kalman Filter prediction update equations... | Time: 6.72s | Results: 5
+2025-12-01 18:48:21,845 - observability - INFO - Token Usage | Prompt: 41 chars | Completion: 294 chars | Est. Tokens: 83
+2025-12-01 18:48:23,051 - observability - INFO - Query Complete | Agent: Tutor (Q&A) | Time: 18.02s
+2025-12-01 18:48:41,388 - observability - INFO - RAG Retrieval | Query: Kalman Filter explanation... | Time: 1.33s | Results: 5
+2025-12-01 18:48:41,389 - observability - INFO - Token Usage | Prompt: 25 chars | Completion: 276 chars | Est. Tokens: 75
+2025-12-01 18:48:54,325 - observability - INFO - Query Complete | Agent: Tutor (Q&A) | Time: 15.33s
+2025-12-01 18:58:22,452 - observability - INFO - RAG Retrieval | Query: Kalman Filter algorithm... | Time: 1.63s | Results: 5
+2025-12-01 18:58:22,457 - observability - INFO - Token Usage | Prompt: 23 chars | Completion: 498 chars | Est. Tokens: 130
+2025-12-01 18:58:25,022 - observability - INFO - RAG Retrieval | Query: Kalman Filter steps... | Time: 1.39s | Results: 5
+2025-12-01 18:58:25,022 - observability - INFO - Token Usage | Prompt: 19 chars | Completion: 194 chars | Est. Tokens: 53
+2025-12-01 18:58:27,846 - observability - INFO - RAG Retrieval | Query: Kalman Filter equations... | Time: 1.62s | Results: 5
+2025-12-01 18:58:27,846 - observability - INFO - Token Usage | Prompt: 23 chars | Completion: 226 chars | Est. Tokens: 62
+2025-12-01 18:58:30,231 - observability - INFO - RAG Retrieval | Query: Kalman Filter prediction update measurement update... | Time: 1.18s | Results: 5
+2025-12-01 18:58:30,232 - observability - INFO - Token Usage | Prompt: 60 chars | Completion: 151 chars | Est. Tokens: 52
+2025-12-01 18:58:32,923 - observability - INFO - RAG Retrieval | Query: Kalman Filter x_t = A x_{t-1} + B u_t... | Time: 1.18s | Results: 5
+2025-12-01 18:58:32,924 - observability - INFO - Token Usage | Prompt: 37 chars | Completion: 138 chars | Est. Tokens: 43
+2025-12-01 18:58:35,523 - observability - INFO - RAG Retrieval | Query: Kalman Filter high level explanation... | Time: 1.40s | Results: 5
+2025-12-01 18:58:35,524 - observability - INFO - Token Usage | Prompt: 36 chars | Completion: 286 chars | Est. Tokens: 80
+2025-12-01 18:58:37,935 - observability - INFO - Query Complete | Agent: Tutor (Q&A) | Time: 18.20s
+2025-12-01 19:06:28,951 - observability - INFO - RAG Retrieval | Query: significance of Kalman Gain... | Time: 1.09s | Results: 5
+2025-12-01 19:06:28,953 - observability - INFO - Token Usage | Prompt: 27 chars | Completion: 83 chars | Est. Tokens: 27
+2025-12-01 19:06:31,429 - observability - INFO - RAG Retrieval | Query: Kalman Gain importance... | Time: 1.41s | Results: 5
+2025-12-01 19:06:31,430 - observability - INFO - Token Usage | Prompt: 22 chars | Completion: 173 chars | Est. Tokens: 48
+2025-12-01 19:06:33,691 - observability - INFO - RAG Retrieval | Query: Kalman Gain function... | Time: 1.08s | Results: 5
+2025-12-01 19:06:33,692 - observability - INFO - Token Usage | Prompt: 20 chars | Completion: 97 chars | Est. Tokens: 29
+2025-12-01 19:06:35,846 - observability - INFO - RAG Retrieval | Query: Kalman Gain role in Kalman Filter equations... | Time: 1.07s | Results: 5
+2025-12-01 19:06:35,846 - observability - INFO - Token Usage | Prompt: 43 chars | Completion: 119 chars | Est. Tokens: 40
+2025-12-01 19:06:38,232 - observability - INFO - RAG Retrieval | Query: Kalman Gain definition... | Time: 1.29s | Results: 5
+2025-12-01 19:06:38,232 - observability - INFO - Token Usage | Prompt: 22 chars | Completion: 183 chars | Est. Tokens: 51
+2025-12-01 19:06:39,642 - observability - INFO - Query Complete | Agent: Tutor (Q&A) | Time: 12.93s
+2025-12-01 19:07:40,665 - observability - INFO - RAG Retrieval | Query: Kalman Filter algorithm... | Time: 3.67s | Results: 5
+2025-12-01 19:07:40,666 - observability - INFO - Token Usage | Prompt: 23 chars | Completion: 239 chars | Est. Tokens: 65
+2025-12-01 19:07:46,447 - observability - INFO - RAG Retrieval | Query: Kalman Filter measurement update control update... | Time: 3.19s | Results: 5
+2025-12-01 19:07:46,447 - observability - INFO - Token Usage | Prompt: 47 chars | Completion: 83 chars | Est. Tokens: 32
+2025-12-01 19:07:48,505 - langchain_google_genai.chat_models - WARNING - Retrying langchain_google_genai.chat_models._chat_with_retry.<locals>._chat_with_retry in 2.0 seconds as it raised ResourceExhausted: 429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details..
+2025-12-01 19:07:55,452 - observability - INFO - RAG Retrieval | Query: Kalman Filter algorithm details... | Time: 2.83s | Results: 5
+2025-12-01 19:07:55,452 - observability - INFO - Token Usage | Prompt: 31 chars | Completion: 317 chars | Est. Tokens: 87
+2025-12-01 19:08:00,367 - observability - INFO - RAG Retrieval | Query: Kalman Filter equations measurement update control... | Time: 2.07s | Results: 5
+2025-12-01 19:08:00,367 - observability - INFO - Token Usage | Prompt: 57 chars | Completion: 151 chars | Est. Tokens: 52
+2025-12-01 19:08:06,136 - observability - INFO - Query Complete | Agent: Tutor (Q&A) | Time: 30.24s
+2025-12-01 19:11:03,421 - pypdf._reader - WARNING - Ignoring wrong pointing object 12 0 (offset 0)
+2025-12-01 19:11:03,424 - pypdf._reader - WARNING - Ignoring wrong pointing object 39 0 (offset 0)
+2025-12-01 19:11:03,516 - pypdf._reader - WARNING - Ignoring wrong pointing object 13 0 (offset 0)
+2025-12-01 19:11:03,516 - pypdf._reader - WARNING - Ignoring wrong pointing object 19 0 (offset 0)
+2025-12-01 19:11:03,518 - pypdf._reader - WARNING - Ignoring wrong pointing object 150 0 (offset 0)
+2025-12-01 19:11:03,518 - pypdf._reader - WARNING - Ignoring wrong pointing object 151 0 (offset 0)
+2025-12-01 19:11:18,024 - langchain_google_genai.chat_models - WARNING - Retrying langchain_google_genai.chat_models._chat_with_retry.<locals>._chat_with_retry in 2.0 seconds as it raised ResourceExhausted: 429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details..
+2025-12-01 19:11:30,208 - langchain_google_genai.chat_models - WARNING - Retrying langchain_google_genai.chat_models._chat_with_retry.<locals>._chat_with_retry in 2.0 seconds as it raised ResourceExhausted: 429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details..
+2025-12-01 19:11:43,628 - observability - INFO - RAG Retrieval | Query: Inversion Lemma... | Time: 3.23s | Results: 2
+2025-12-01 19:11:43,628 - observability - INFO - Token Usage | Prompt: 15 chars | Completion: 175 chars | Est. Tokens: 47
+2025-12-01 19:11:48,408 - observability - INFO - RAG Retrieval | Query: Inversion Lemma Kalman-Filter.pdf... | Time: 3.69s | Results: 5
+2025-12-01 19:11:48,408 - observability - INFO - Token Usage | Prompt: 33 chars | Completion: 254 chars | Est. Tokens: 71
+2025-12-01 19:11:51,155 - observability - INFO - RAG Retrieval | Query: Matrix Inversion Lemma... | Time: 1.32s | Results: 2
+2025-12-01 19:11:51,155 - observability - INFO - Token Usage | Prompt: 22 chars | Completion: 213 chars | Est. Tokens: 58
+2025-12-01 19:11:54,140 - observability - INFO - RAG Retrieval | Query: Matrix Inversion Lemma proof... | Time: 1.24s | Results: 4
+2025-12-01 19:11:54,141 - observability - INFO - Token Usage | Prompt: 28 chars | Completion: 209 chars | Est. Tokens: 59
+2025-12-01 19:11:55,550 - observability - INFO - Query Complete | Agent: Tutor (Q&A) | Time: 19.05s
+2025-12-01 19:12:21,277 - observability - INFO - RAG Retrieval | Query: Inversion Lemma... | Time: 1.85s | Results: 2
+2025-12-01 19:12:21,278 - observability - INFO - Token Usage | Prompt: 15 chars | Completion: 140 chars | Est. Tokens: 38
+2025-12-01 19:12:25,189 - observability - INFO - RAG Retrieval | Query: matrix inversion lemma... | Time: 2.17s | Results: 3
+2025-12-01 19:12:25,189 - observability - INFO - Token Usage | Prompt: 22 chars | Completion: 142 chars | Est. Tokens: 41
+2025-12-01 19:12:29,827 - observability - INFO - RAG Retrieval | Query: Woodbury matrix identity... | Time: 2.70s | Results: 0
+2025-12-01 19:12:29,827 - observability - INFO - Token Usage | Prompt: 24 chars | Completion: 351 chars | Est. Tokens: 93
+2025-12-01 19:12:34,612 - observability - INFO - Query Complete | Agent: Tutor (Q&A) | Time: 16.37s

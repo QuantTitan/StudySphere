@@ -12,3 +12,4 @@ langchain-community>=0.0.15
 langchain-text-splitters>=0.0.1
 pypdf
 chromadb
+python-json-logger

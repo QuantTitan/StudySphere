@@ -1,0 +1,22 @@
+{
+  "retrieval_times": [
+    4.160151481628418,
+    2.688697576522827,
+    2.7855851650238037
+  ],
+  "token_counts": [
+    62,
+    56,
+    35
+  ],
+  "prompt_latencies": [],
+  "queries": [
+    {
+      "timestamp": "2025-12-01T18:47:18.323536",
+      "query": "Explain the 5 main main formulas in Kalman-Filter",
+      "agent": "Tutor (Q&A)",
+      "response_length": 99,
+      "total_time": 20.589518547058105
+    }
+  ]
+}
