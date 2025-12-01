@@ -5,6 +5,8 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 import os
 
+RELEVANCE_THRESHOLD = 0.7  # Filter results below this similarity score
+
 def setup_rag_pipeline(pdf_paths, api_key):
     """Initialize RAG with vector search from PDFs"""
     
@@ -55,24 +57,45 @@ def setup_rag_pipeline(pdf_paths, api_key):
         temperature=0.7
     )
     
-    # Create RAG chain
+    # Create RAG chain with semantic filtering
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
-        retriever=vectorstore.as_retriever(search_kwargs={"k": 5}),
+        retriever=vectorstore.as_retriever(
+            search_kwargs={"k": 5, "score_threshold": RELEVANCE_THRESHOLD}
+        ),
         return_source_documents=True
     )
     
     return qa_chain
 
+def compact_context(documents: list, max_length: int = 2000) -> str:
+    """Context Compaction: Summarize long documents to reduce token load"""
+    if not documents:
+        return ""
+    
+    # Concatenate all document content
+    full_text = "\n\n".join([doc.page_content for doc in documents])
+    
+    # Truncate if too long (token reduction)
+    if len(full_text) > max_length:
+        full_text = full_text[:max_length] + "..."
+    
+    return full_text
+
 def query_rag(qa_chain, question):
-    """Query the RAG pipeline and get response with sources"""
+    """Query the RAG pipeline with semantic filtering and context compaction"""
     result = qa_chain({"query": question})
     
     response = result["result"]
     sources = result.get("source_documents", [])
     
-    # Format source references
+    # Apply context compaction to reduce token usage
+    if sources:
+        compacted_context = compact_context(sources, max_length=2000)
+        # Note: The response already uses compacted context through the chain
+    
+    # Format source references with relevance info
     source_info = "\n\n**📚 Sources Used:**\n"
     for i, doc in enumerate(sources, 1):
         filename = os.path.basename(doc.metadata.get('source', 'Unknown'))

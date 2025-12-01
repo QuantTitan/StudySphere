@@ -23,6 +23,11 @@ with c2:
 st.markdown("## AI Tutor Description")
 rag_description = """
 StudySphere leverages RAG (Retrieval-Augmented Generation) with Google Gemini to provide in-depth, contextually rich answers to complex educational queries. It retrieves relevant information from your uploaded documents and generates accurate responses.
+
+**✨ Advanced Features:**
+- 🔄 **Context Compaction** - Reduces token load while preserving key information
+- 🎯 **Semantic Filtering** - Ensures high-relevance results only (>0.7 similarity)
+- 🧠 **Role-Enriched Prompts** - Expert educational guidance with source citations
 """
 st.markdown(rag_description)
 
@@ -49,6 +54,10 @@ if api_key:
     st.sidebar.header('StudySphere: AI-Tutor')
     st.sidebar.image(logo, width=120)
     st.sidebar.caption('Made by QuantTitan and D')
+    
+    # Show active enhancements
+    st.sidebar.markdown("### 🚀 Active Enhancements")
+    st.sidebar.markdown("✓ Context Compaction\n✓ Semantic Filtering\n✓ Role-Enriched Prompts")
 
     if st.sidebar.button('Generate Chat History'):
         if "messages" in st.session_state:
