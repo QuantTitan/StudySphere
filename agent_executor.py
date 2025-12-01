@@ -1,39 +1,48 @@
 from langchain.agents import initialize_agent, AgentType, Tool
 from llm_client import get_llm
-from agent_tools import (
-    rag_search_tool,
-    generate_notes_tool,
-    generate_quiz_tool,
-    summary_tool
-)
+import streamlit as st
+from rag_engine import query_rag
 
-tools = [
-    Tool(
-        name="RAG_Search",
-        func=rag_search_tool,
-        description="Use this tool to retrieve content from uploaded PDFs."
-    ),
-    Tool(
-        name="Generate_Notes",
-        func=generate_notes_tool,
-        description="Generate structured notes for any given topic."
-    ),
-    Tool(
-        name="Generate_Quiz",
-        func=generate_quiz_tool,
-        description="Generate 5 MCQ quiz questions for a topic."
-    ),
-    Tool(
-        name="Summarize",
-        func=summary_tool,
-        description="Summarize any provided text."
+def create_agent(api_key: str):
+    """Create and return a LangChain agent bound to a Gemini LLM using api_key."""
+    llm = get_llm(api_key)
+
+    # tool implementations close over llm and use session_state.qa_chain
+    def rag_search_tool_func(query: str) -> str:
+        if "qa_chain" not in st.session_state or st.session_state.qa_chain is None:
+            return "❌ RAG not initialized. Upload documents first."
+        return query_rag(st.session_state.qa_chain, query)
+
+    def generate_notes_tool_func(topic: str) -> str:
+        context = rag_search_tool_func(topic)
+        prompt = f"Make structured study notes on: {topic}\n\nUsing this context:\n{context}"
+        # llm.predict may vary by LLM wrapper; using predict for LangChain model wrapper
+        return llm.predict(prompt)
+
+    def generate_quiz_tool_func(topic: str) -> str:
+        context = rag_search_tool_func(topic)
+        prompt = f"Generate 5 MCQs with answers based on this context:\n{context}"
+        return llm.predict(prompt)
+
+    def summary_tool_func(text: str) -> str:
+        prompt = f"Summarize this:\n{text}"
+        return llm.predict(prompt)
+
+    tools = [
+        Tool(name="RAG_Search", func=rag_search_tool_func,
+             description="Retrieve content from uploaded PDFs."),
+        Tool(name="Generate_Notes", func=generate_notes_tool_func,
+             description="Generate structured notes for a topic."),
+        Tool(name="Generate_Quiz", func=generate_quiz_tool_func,
+             description="Generate 5 MCQs with answers for a topic."),
+        Tool(name="Summarize", func=summary_tool_func,
+             description="Summarize provided text.")
+    ]
+
+    agent = initialize_agent(
+        tools,
+        llm,
+        agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+        verbose=True
     )
-]
-
-# Main Agent
-agent = initialize_agent(
-    tools,
-    get_llm(),
-    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-    verbose=True
-)
+    return agent

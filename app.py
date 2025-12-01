@@ -4,7 +4,7 @@ from api_handler import send_query_get_response
 from chat_gen import generate_html
 from file_upload import check_and_upload_files
 import os
-from agent_executor import agent
+from agent_executor import create_agent
 from rag_engine import setup_rag_pipeline
 
 logo = Image.open('logo.png')
@@ -30,9 +30,15 @@ st.markdown(rag_description)
 api_key = st.text_input(label='Enter your Gemini API Key', type='password')
 
 if api_key:
+    # create agent for this api_key if not present or if key changed
+    if "agent_api_key" not in st.session_state or st.session_state.agent_api_key != api_key:
+        st.session_state.agent = create_agent(api_key)
+        st.session_state.agent_api_key = api_key
+
     file_ids, file_paths = check_and_upload_files(api_key)
 
     if file_paths:
+        # initialize RAG chain using the same api_key
         if "qa_chain" not in st.session_state:
             st.session_state.qa_chain = setup_rag_pipeline(file_paths, api_key)
     
@@ -72,7 +78,8 @@ if api_key:
 
         with st.chat_message("assistant"):
             with st.spinner("🤔 Thinking..."):
-                response = agent.run(prompt)
+                # use session agent created with user's api_key
+                response = st.session_state.agent.run(prompt)
             st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
 
