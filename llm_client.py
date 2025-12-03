@@ -1,5 +1,4 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import PromptTemplate
 
 # Role-Enriched System Prompt
 TUTOR_SYSTEM_PROMPT = """You are StudySphere AI-Tutor, an expert educational assistant.
@@ -26,6 +25,6 @@ def get_llm(api_key: str):
     return ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
         google_api_key=api_key,
-        temperature=1.0,
+        temperature=0.5,  # ← Reduced from 1.0 to favor tool use over freeform text
         system_prompt=TUTOR_SYSTEM_PROMPT
     )

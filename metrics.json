@@ -1,22 +1,27 @@
 {
   "retrieval_times": [
-    4.160151481628418,
-    2.688697576522827,
-    2.7855851650238037
+    3.012117624282837,
+    2.598335027694702
   ],
   "token_counts": [
-    62,
-    56,
-    35
+    249,
+    269
   ],
   "prompt_latencies": [],
   "queries": [
     {
-      "timestamp": "2025-12-01T18:47:18.323536",
-      "query": "Explain the 5 main main formulas in Kalman-Filter",
+      "timestamp": "2025-12-04T00:46:22.272489",
+      "query": "Can you explain the intuition behind Weighted Information Sampling and Ordinary Information Sampling",
       "agent": "Tutor (Q&A)",
-      "response_length": 99,
-      "total_time": 20.589518547058105
+      "response_length": 561,
+      "total_time": 9.109499454498291
+    },
+    {
+      "timestamp": "2025-12-04T00:47:39.205692",
+      "query": "Generate two multiple-choice questions about Weighted Information Sampling and Ordinary Information ",
+      "agent": "Tutor (Q&A)",
+      "response_length": 773,
+      "total_time": 5.886737585067749
     }
   ]
 }

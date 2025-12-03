@@ -14,3 +14,7 @@ pypdf
 chromadb
 python-json-logger
 faiss-cpu
+pdf2image
+pillow
+pytesseract
+pymupdf

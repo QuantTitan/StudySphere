@@ -1,32 +1,35 @@
 import google.generativeai as genai
 import streamlit as st
 import os
-from pathlib import Path
+from ocr_preprocessing import OCRPreprocessor
 
 def upload_files_to_gemini(api_key, uploaded_files):
     """Upload files to Gemini and save locally"""
     genai.configure(api_key=api_key)
     
-    # Create temp directory for PDFs
     temp_dir = "temp_pdfs"
     os.makedirs(temp_dir, exist_ok=True)
     
     file_ids = []
     file_paths = []
     
+    ocr_preprocessor = OCRPreprocessor()
+    
     for uploaded_file in uploaded_files:
         if uploaded_file is not None:
-            # Save file locally with proper path
             file_path = os.path.join(temp_dir, uploaded_file.name)
             
             with open(file_path, 'wb') as f:
                 f.write(uploaded_file.getbuffer())
             
             file_paths.append(file_path)
-            print(f"✓ Saved locally: {file_path}")
+            
+            # Check if scanned and display status
+            is_scanned = ocr_preprocessor.is_scanned_pdf(file_path)
+            status = "🖼️ Scanned (OCR)" if is_scanned else "📄 Native Text"
+            print(f"✓ Saved locally: {file_path} [{status}]")
             
             try:
-                # Upload to Gemini (optional, for backup)
                 response = genai.upload_file(
                     path=file_path,
                     mime_type='application/pdf'
@@ -39,7 +42,7 @@ def upload_files_to_gemini(api_key, uploaded_files):
     return file_ids, file_paths
 
 def check_and_upload_files(api_key):
-    """Check and upload files"""
+    """Check and upload files with OCR detection"""
     genai.configure(api_key=api_key)
     
     st.warning("Upload Educational Material (PDF)")
@@ -50,7 +53,15 @@ def check_and_upload_files(api_key):
             try:
                 file_ids, file_paths = upload_files_to_gemini(api_key, uploaded_files)
                 st.success(f"{len(file_paths)} files successfully uploaded and saved.")
-                st.session_state.file_paths = file_paths  # Store in session
+                
+                # Show OCR status for each file
+                ocr_preprocessor = OCRPreprocessor()
+                for fp in file_paths:
+                    is_scanned = ocr_preprocessor.is_scanned_pdf(fp)
+                    status = "🖼️ Scanned (OCR will be used)" if is_scanned else "📄 Native Text"
+                    st.info(f"{os.path.basename(fp)}: {status}")
+                
+                st.session_state.file_paths = file_paths
                 return file_ids, file_paths
             except Exception as e:
                 st.error(f"An error occurred: {e}")
@@ -59,7 +70,6 @@ def check_and_upload_files(api_key):
             st.warning("Please select at least one file.")
             return [], []
     
-    # Return previously saved files if they exist
     if "file_paths" in st.session_state:
         return [], st.session_state.file_paths
     

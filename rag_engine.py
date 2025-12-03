@@ -1,31 +1,53 @@
-from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
+from ocr_preprocessing import OCRPreprocessor
 import os
 import time
+import logging
 from observability import tracker
 
-RELEVANCE_THRESHOLD = 0.3  # Filter results below this similarity score
+logger = logging.getLogger(__name__)
+
+RELEVANCE_THRESHOLD = 0.3
+ocr_preprocessor = OCRPreprocessor()  # Initialize once
 
 def setup_rag_pipeline(pdf_paths, api_key):
-    """Initialize RAG with vector search from PDFs"""
+    """Initialize RAG with vector search from PDFs (with OCR for scanned PDFs)"""
     
     all_documents = []
     
-    # Load all PDFs
     for pdf_path in pdf_paths:
         try:
             if os.path.exists(pdf_path):
                 print(f"Loading: {pdf_path}")
-                loader = PyPDFLoader(pdf_path)
-                documents = loader.load()
+                
+                # Detect if scanned and use appropriate loader
+                if ocr_preprocessor.is_scanned_pdf(pdf_path):
+                    print(f"  → Scanned PDF detected, using OCR...")
+                    documents = ocr_preprocessor.hybrid_load_pdf(pdf_path)
+                else:
+                    print(f"  → Native text PDF, using standard extraction...")
+                    from pypdf import PdfReader
+                    from langchain.schema import Document
+                    reader = PdfReader(pdf_path)
+                    documents = []
+                    for page_num, page in enumerate(reader.pages, 1):
+                        text = page.extract_text() or ""
+                        metadata = {
+                            "source": os.path.basename(pdf_path),
+                            "page": page_num,
+                            "ocr_preprocessed": False
+                        }
+                        documents.append(Document(page_content=text, metadata=metadata))
+                
                 all_documents.extend(documents)
                 print(f"✓ Loaded {len(documents)} pages from {pdf_path}")
             else:
                 print(f"✗ File not found: {pdf_path}")
         except Exception as e:
+            logger.error(f"Error loading {pdf_path}: {e}")
             print(f"Error loading {pdf_path}: {e}")
     
     if not all_documents:
@@ -34,10 +56,11 @@ def setup_rag_pipeline(pdf_paths, api_key):
     
     print(f"Total documents loaded: {len(all_documents)}")
     
-    # Split documents into chunks
+    # Split documents into chunks (preserve paragraphs for formulas)
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200
+        chunk_size=1200,
+        chunk_overlap=200,
+        separators=["\n\n", "\n", " ", ""]
     )
     chunks = splitter.split_documents(all_documents)
     print(f"Created {len(chunks)} chunks")
@@ -56,16 +79,14 @@ def setup_rag_pipeline(pdf_paths, api_key):
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
         google_api_key=api_key,
-        temperature=1.0
+        temperature=0.2
     )
     
-    # Create RAG chain with semantic filtering
+    # Create RAG chain
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
-        retriever=vectorstore.as_retriever(
-            search_kwargs={"k": 5, "score_threshold": RELEVANCE_THRESHOLD}
-        ),
+        retriever=vectorstore.as_retriever(search_kwargs={"k": 6}),
         return_source_documents=True
     )
     
