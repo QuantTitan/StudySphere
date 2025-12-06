@@ -10,6 +10,18 @@
 > **Track:** Agents for Good (Education)  
 > **Status:** 🚀 [Live Demo on Google Cloud Run](https://studysphere-582177542254.us-central1.run.app/)
 
+## 🔗 Project Links & Media
+
+Access the project, code, and supplementary materials through the links below.
+
+*   **Live Demo:** [Try StudySphere Here](https://studysphere-582177542254.us-central1.run.app/)
+*   **Medium Writeup:** [Read the full project writeup on Medium](https://medium.com/@b22ee001/how-i-built-studysphere-from-it-works-on-localhost-to-a-multi-agent-cloud-deployment-751fd51e0ed7)
+*   **Kaggle Writeup:** [Read the full project writeup on Kaggle](https://www.kaggle.com/competitions/agents-intensive-capstone-project/writeups/how-i-built-a-multi-agent-ai-tutor-that-actually-c)
+*   **Presentation:** [Watch the final project presentation on YouTube](https://youtu.be/i4ILl2BCeEk)
+*   **Recorded Demo:** [Watch a standalone product demo on YouTube](https://youtu.be/O_E5cibq2T4)
+
+---
+
 ## 📋 Problem Statement
 
 Educational institutions and self-directed learners face a "context gap" in the era of GenAI. While general LLMs are powerful, they fail in academic settings due to:
@@ -303,16 +315,17 @@ Based on internal testing with technical course materials (Computer Science lect
 
 ## 🔮 Future Roadmap
 
-- [ ] **Multi-Modal Support**: Ingest lecture slides (Images) and lecture recordings (Audio) using Gemini 1.5 Pro's native multimodal capabilities.
-- [ ] **Persistent Memory**: Implement a database (PostgreSQL/pgvector) to persist chat history and vector stores across sessions.
-- [ ] **Personalized Learning Paths**: Use the "Notes Agent" to generate a syllabus based on weak areas identified by the "Quiz Agent".
-- [ ] **Graph RAG**: Implement Knowledge Graphs to better understand relationships between concepts across different PDF files.
+While the current implementation provides a robust foundation, several key areas for future development have been identified to enhance the system's capabilities and pedagogical value.
 
----
+- [ ] **Socratic Tutoring Agent**: Introduce a new specialized agent designed to promote deeper learning. Instead of providing direct answers, this agent would engage the user in a guided dialogue, asking probing follow-up questions to help them arrive at the answer themselves. This would shift the interaction from simple Q&A to an active learning process.
 
-## 🤝 Contributing
+- [ ] **Context-Aware Focus Mode**: Develop a proactive agent that integrates with external user calendars (e.g., via Google Calendar API) to be aware of upcoming deadlines and exams. This agent would serve as a personalized study coach, identifying off-topic queries and intelligently redirecting the user back to relevant materials, potentially by initiating a quiz on the priority subject.
 
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit Pull Requests, report bugs, or request features.
+- [ ] **Multi-Modal Support**: Extend the data ingestion capabilities beyond text-based documents. By leveraging the multimodal features of models like Gemini 1.5 Pro, the system could ingest and reason over lecture slides (images), and even lecture recordings (audio), creating a more comprehensive knowledge base.
+
+- [ ] **Persistent Memory & State Management**: Implement a persistent database solution (e.g., PostgreSQL with pgvector) to store vector embeddings and chat histories across user sessions. This would enable long-term memory, allowing the agent to recall past interactions and provide a more continuous, personalized learning experience.
+
+- [ ] **Graph RAG Implementation**: Evolve the retrieval mechanism by implementing a Knowledge Graph. This would allow the system to understand and represent the relationships between different concepts, topics, and documents, enabling more sophisticated queries and a deeper level of contextual understanding that spans the entire course library.
 
 ---
 
